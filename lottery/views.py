@@ -46,3 +46,7 @@ class GetLotteryDetails(APIView):
         ser = LotterySerializer(lottery,many = True, context={'request':request})
         return Response(ser.data, status=status.HTTP_200_OK)
     
+
+def custom_lottery_view(request):
+
+    return render(request,'draw.html')
