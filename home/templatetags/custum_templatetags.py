@@ -11,7 +11,7 @@ register = template.Library()
 
 @register.filter
 def is_category_empty(value):
-    if value.lottery_set.all().exists():
+    if value.lottery_set.filter(draw_in__gte=timezone.now()).exists():
         return False
     else:
         return True
@@ -24,7 +24,7 @@ def give_me_ending_soon_lottery_list(instance):
 
 @register.filter
 def give_me_all_lottery_of_a_category(instance):
-    return instance.lottery_set.all().order_by('draw_in')
+    return instance.lottery_set.filter(draw_in__gte=timezone.now()).order_by('draw_in')
     
 @register.filter
 def perform_subtract(value1,value2):
@@ -45,3 +45,4 @@ def get_chckout_instances(value):
 @register.filter
 def is_any_saved_checkout(value):
     return Checkout.objects.filter(user=value).exists()
+
