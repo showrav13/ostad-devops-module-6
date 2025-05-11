@@ -1,4 +1,4 @@
-# Use official Python image
+# Use official slim Python image
 FROM python:3.11-slim
 
 # Set environment variables
@@ -9,22 +9,20 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 # Install OS-level dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements file
-COPY requirements.txt /app/
-
-# Install virtualenv
+# Install Python dependencies
+COPY requirements.txt .
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Copy project files
-COPY . /app/
+# Copy the rest of the project
+COPY . .
 
-# Expose port 8000
+# Expose port (adjust if needed)
 EXPOSE 8000
 
-# Run the server
+# Start the Django server
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
